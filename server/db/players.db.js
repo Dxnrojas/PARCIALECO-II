@@ -4,13 +4,13 @@
 
 const { assignRoles } = require("../utils/helpers");
 
-const players = []; //Guarda los jugadores. Cada objeto dentro e este array cuenta con su socketId, nickname y ol.
+const players = []; //Guarda los jugadores. Cada objeto dentro e este array cuenta con su socketId, nickname y rol.
 
 /**
  * Get all players
  * @returns {Array} Array of player objects
  */
-const getAllPlayers = () => { //Devuelve tidoi los jugadores y es util para ver cuantos hay conectados
+const getAllPlayers = () => { //Devuelve todos los jugadores y es útil para ver cuántos hay conectados
   return players;
 };
 
@@ -22,6 +22,7 @@ const getAllPlayers = () => { //Devuelve tidoi los jugadores y es util para ver 
  */
 const addPlayer = (nickname, socketId) => {
   const newPlayer = { id: socketId, nickname }; //Crea un nuevo objeto jugador con su nickname y socketId.
+  newPlayer.score = 0; // Se agrega score inicial en 0
   players.push(newPlayer); // Lo guarda en el array players.
   return newPlayer; // Lo devuelve por si lo necesitas en otra función.
 };
@@ -31,7 +32,7 @@ const addPlayer = (nickname, socketId) => {
  * @param {string} socketId - Player's socket ID
  * @returns {Object|null} Player object or null if not found
  */
-const findPlayerById = (socketId) => { 
+const findPlayerById = (socketId) => {
   return players.find((player) => player.id === socketId) || null; //Busca dentro de players el que tenga el socketId igual al buscado.
 }; //Si lo encuentra, lo devuelve; si no, devuelve null.
 
@@ -39,7 +40,7 @@ const findPlayerById = (socketId) => {
  * Asigna roles a los jugadores
  * @returns {Array} Array of players with assigned roles
  */
-const assignPlayerRoles = () => { //Llama a una función externa assignRoles(players) que asigna roles 
+const assignPlayerRoles = () => { //Llama a una función externa assignRoles(players) que asigna roles
   const playersWithRoles = assignRoles(players); //Se asignan los roles y se devuelve el array con los jugadores y sus roles.
   // Update the players array with the new values
   players.splice(0, players.length, ...playersWithRoles);
@@ -51,7 +52,7 @@ const assignPlayerRoles = () => { //Llama a una función externa assignRoles(pla
  * @param {string|Array} role - Role or array of roles to find
  * @returns {Array} Array of players with the specified role(s)
  */
-const findPlayersByRole = (role) => { //Esta funcion permite buscar jugadores por un solo rol o varios roles.
+const findPlayersByRole = (role) => { //Esta función permite buscar jugadores por un solo rol o varios roles.
   if (Array.isArray(role)) {
     return players.filter((player) => role.includes(player.role));
   }
@@ -74,6 +75,29 @@ const resetGame = () => { //Borra todos los jugadores conectados.
   players.splice(0, players.length);
 };
 
+/**
+ * Actualiza el score de un jugador por socketId
+ * @param {string} socketId 
+ * @param {number} delta 
+ */
+const updatePlayerScore = (socketId, delta) => {
+  const player = findPlayerById(socketId);
+  if (player) {
+    player.score += delta;
+  }
+};
+
+/**
+ * Retorna los jugadores con sus puntajes
+ * @returns {Array}
+ */
+const getPlayersWithScores = () => {
+  return players.map(player => ({
+    nickname: player.nickname,
+    score: player.score
+  }));
+};
+
 module.exports = {
   getAllPlayers,
   addPlayer,
@@ -82,4 +106,6 @@ module.exports = {
   findPlayersByRole,
   getGameData,
   resetGame,
+  updatePlayerScore,
+  getPlayersWithScores,
 };

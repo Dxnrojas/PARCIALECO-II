@@ -60,9 +60,13 @@ async function makeRequest(url, method, body) {
     return result;
   } catch (error) {
     console.error("API request failed:", error);
-    // Return a failed response object that can be checked by callers
     return { success: false, error: error.message };
   }
 }
+
+// ✅ NUEVO: escuchar reinicio del juego desde socket
+socket.on("gameReset", () => {
+  navigateTo("/", {});
+});
 
 export { navigateTo, socket, makeRequest };

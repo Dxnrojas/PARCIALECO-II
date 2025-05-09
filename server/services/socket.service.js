@@ -1,24 +1,36 @@
-const { Server } = require("socket.io"); //Importa el constructor de la clase Server desde socket.io. Lo usaremos para crear una instancia de WebSocket.
+const { Server } = require("socket.io");
+const { resetGame } = require("../db/players.db"); // ✅ nuevo: importar función para borrar jugadores
 
-let io; //Declara una variable global dentro de este módulo que almacenará la instancia de io.
+let io;
 
 const initSocketInstance = (httpServer) => {
-  io = new Server(httpServer, { //Crea un nuevo servidor WebSocket encima del HTTP.
-    path: "/real-time", //canal de conexión para los sockets.
+  io = new Server(httpServer, {
+    path: "/real-time",
     cors: {
-      origin: "*", //permite conexiones desde cualquier origen (útil para desarrollo con múltiples clientes).
+      origin: "*",
     },
+  });
+
+  io.on("connection", (socket) => {
+    console.log("🎮 Nuevo cliente conectado al juego");
+
+    // ✅ NUEVO: manejar reinicio del juego
+    socket.on("resetGame", () => {
+      console.log("🔁 Reiniciando juego...");
+      resetGame(); // limpiar jugadores
+      io.emit("gameReset"); // notificar a todos los clientes
+    });
   });
 };
 
-const emitToSpecificClient = (socketId, eventName, data) => { //Notifica un evento con datos(los de los paraametros) a un solo cliente, identificado por su socketId.
+const emitToSpecificClient = (socketId, eventName, data) => {
   if (!io) {
     throw new Error("Socket.io instance is not initialized");
   }
-  io.to(socketId).emit(eventName, data); //Usa io.to(socketId) para enviar el evento solo al cliente con ese socketId. 
+  io.to(socketId).emit(eventName, data);
 };
 
-const emitEvent = (eventName, data) => { //Notifica algo a todos los clientes conectados.
+const emitEvent = (eventName, data) => {
   if (!io) {
     throw new Error("Socket.io instance is not initialized");
   }
@@ -30,6 +42,3 @@ module.exports = {
   initSocketInstance,
   emitToSpecificClient,
 };
-
-//Porque evita que crees múltiples instancias de WebSocket 
-// en distintas partes del backend. Define una sola fuente de verdad y mantiene la conexión ordenada y reutilizable.
