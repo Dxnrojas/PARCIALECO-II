@@ -19,7 +19,7 @@ app.use("/results", express.static(path.join(__dirname, "results-screen"))); //m
 //Esto es lo que permite que accedas al HTML y JS del juego directamente por URL.
 
 // Routes
-app.use("/api", playersRouter);
+app.use("/api", playersRouter); //Se usa para manejar las rutas relacionadas con jugadores.
 app.use("/api/game", gameRouter);
 
 // Services

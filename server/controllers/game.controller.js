@@ -39,16 +39,16 @@ const startGame = async (req, res) => {
   }
 };
 
-const notifyMarco = async (req, res) => { // Llamado cuando un Marco grita.
-  try {
-    const { socketId } = req.body;
+const notifyMarco = async (req, res) => { // Llamado cuando un Marco grita. 
+  try {  
+    const { socketId } = req.body; //Aca se recibe el ID del jugador que grita.
 
     const rolesToNotify = playersDb.findPlayersByRole([ // Se buscan todos los jugadores con rol polo o polo-especial.
       "polo",
       "polo-especial",
     ]);
 
-    rolesToNotify.forEach((player) => {
+    rolesToNotify.forEach((player) => { //Arriba se recibe el ID y aca abajo se notifica
       emitToSpecificClient(player.id, "notification", { //A cada uno se le envía una notificación con el mensaje "Marco!!!" y el id de quien lo dijo (Marco)
         message: "Marco!!!",
         userId: socketId,
@@ -68,7 +68,7 @@ const notifyPolo = async (req, res) => { //Igual que el anterior, pero en sentid
     const rolesToNotify = playersDb.findPlayersByRole("marco");
 
     rolesToNotify.forEach((player) => {
-      emitToSpecificClient(player.id, "notification", {
+      emitToSpecificClient(player.id, "notification", { //A cada uno se le envía una notificación con el mensaje "Polo!!" y el id de quien lo dijo (Polo)
         message: "Polo!!",
         userId: socketId,
       });

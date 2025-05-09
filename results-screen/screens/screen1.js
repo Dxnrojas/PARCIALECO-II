@@ -27,12 +27,12 @@ export default function renderScreen1() {
     players.forEach((player) => {
       const li = document.createElement("li");
       li.textContent = `${player.nickname}: ${player.score} puntos`;
-      scoresList.appendChild(li);
+      scoresList.appendChild(li); //por cada jugar anadir el score 
     });
   });
 
   // Evento opcional: pasar a la pantalla final si se emite desde el backend
-  socket.on("showFinalScreen", (rankingData) => {
-    navigateTo("/screen2", { players: rankingData });
+  socket.on("showFinalScreen", (rankingData) => { //Si se emite desde el backend, se navega a la pantalla 2
+    navigateTo("/screen2", { players: rankingData }); 
   });
 }

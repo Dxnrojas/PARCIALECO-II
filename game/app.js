@@ -5,14 +5,14 @@ import renderGameOverScreen from "./screens/gameOverScreen.js";
 
 const socket = io("/", { path: "/real-time" });
 
-function clearScripts() {
+function clearScripts() { // Clear all scripts from the page
   document.getElementById("app").innerHTML = "";
 }
 
-let route = { path: "/", data: {} };
+let route = { path: "/", data: {} }; //Inicializa el objeto de ruta
 renderRoute(route);
 
-function renderRoute(currentRoute) {
+function renderRoute(currentRoute) { //Renderiza cada caso de cada pantalla segun notifique
   switch (currentRoute?.path) {
     case "/":
       clearScripts();
@@ -36,12 +36,12 @@ function renderRoute(currentRoute) {
   }
 }
 
-function navigateTo(path, data) {
+function navigateTo(path, data) { //Navega a la ruta especificada
   route = { path, data };
   renderRoute(route);
 }
 
-async function makeRequest(url, method, body) {
+async function makeRequest(url, method, body) { //Es una función genérica que te permite hacer peticiones HTTP (fetch) al backend, de forma reutilizable.
   try {
     const BASE_URL = "http://localhost:5050";
     let response = await fetch(`${BASE_URL}${url}`, {
@@ -64,7 +64,7 @@ async function makeRequest(url, method, body) {
   }
 }
 
-// ✅ NUEVO: escuchar reinicio del juego desde socket
+// NUEVO: escuchar reinicio del juego desde socket
 socket.on("gameReset", () => {
   navigateTo("/", {});
 });

@@ -5,7 +5,7 @@ export default function renderScreen2(data) {
 
   app.innerHTML = `
     <div id="screen2">
-      <h2>🏆 Pantalla Final - Ranking</h2>
+      <h2>Puntaje Final</h2>
       <ul id="ranking-list"></ul>
       <div style="margin-top: 1rem;">
         <button id="sort-alpha">Ordenar alfabéticamente</button>
